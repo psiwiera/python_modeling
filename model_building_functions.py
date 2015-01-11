@@ -1,26 +1,48 @@
-import csv
 from sklearn import linear_model as sklm
+from sklearn import tree
 from sklearn import cross_validation as cv
-import numpy as np
-import matplotlib.pyplot as plt
 from sklearn import decomposition as dec
 from sklearn.pipeline import Pipeline
 from sklearn.grid_search import GridSearchCV
+import numpy as np
+import matplotlib.pyplot as plt
+import pylab as pl
+#import psycopg2
+import pandas
 
-# pipeline functions?
-# grid searching for estimator parameters
-# backward removal of variables
-# scores = safe_sparse_dot(X, self.coef_.T, dense_output=True) + self.intercept_
 
-def all_data_train(data):
-	print data.info()
-	print data.dtypes
-	X = data[0:, :-1]
-	y = data[0:,7]
+# Model functions
+def logReg (X,y):
 	model = sklm.LogisticRegression()
 	model.fit(X,y)
-	model.coef_ 
-	model.intercept_
+	print 'Model coefficients: '
+	print model.coef_ 
+	print 'Model intercept: '
+	print model.intercept_
+
+	return model
+
+def decTree(X,y):
+	model = tree.DecisionTreeClassifier()
+	model.fit(X,y)
+	tree.export_graphviz(model, out_file='tree.dot')  
+
+# Define function to Plot ROC curve
+def plotRocCurve(classifiers):
+	pl.clf()
+	#pl.plot(log_fpr, log_tpr, label='Logistic Regression ROC curve (area = %0.2f)' % log_roc_auc)
+
+	for key,value in classifiers.items():
+		pl.plot(value['false_positive'], value['true_positive'], label=str(value['label']) + ' (area = %0.2f)' % value['ROC_auc'])
+	pl.plot([0, 1], [0, 1], 'k--')
+	pl.xlim([0.0, 1.0])
+	pl.ylim([0.0, 1.0])
+	pl.xlabel('False Positive Rate')
+	pl.ylabel('True Positive Rate')
+	pl.title('Receiver operating characteristic example')
+	pl.legend(loc="lower right")
+	pl.show()
+
 
 def pipeline(data):
 	X_train, X_test, y_train, y_test = cv.train_test_split(data[0:, :-1], data[0:,7])
@@ -59,7 +81,3 @@ def pipeline(data):
 	plt.axvline(estimator.best_estimator_.named_steps['pca'].n_components,
 	            linestyle=':', label='n_components chosen')
 	plt.legend(prop=dict(size=12))
-
-
-if __name__ == "__main__":
-	print 'Please run this script from the machine_learning_master script'
