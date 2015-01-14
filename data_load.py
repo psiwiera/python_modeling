@@ -38,8 +38,19 @@ def csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR):
 	print 'Data Load Completed Successfully'
 	return data
 
-def postgres(tbd):
-	return tbd
+# define function to read in data for the avazu kaggle
+def psqlLoad():
+	#connect to postgres and read the data into a data frame
+	conn = psycopg2.connect("dbname=localdb user=postgres password='password'")
+	df=pandas.read_sql("select * from kaggle_avazu.training_sample",conn)
+	 
+	#use .ix[row slice, column slice] to create analytics vector
+	X = df.ix[:,['c1','c14','c15','c16','c17','c18','c19','c20','c21']]
+
+	#define the target variable
+	y=df.ix[:,'click'].astype(int)
+
+	return (X,y,df)
 
 if __name__ == "__main__":
 	print 'Please run this script from the machine_learning_master script'
