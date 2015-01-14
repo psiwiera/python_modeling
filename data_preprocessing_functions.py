@@ -8,8 +8,12 @@ import matplotlib.pyplot as plt
 
 #-------- Investigate Data Frame Overall ---------------------------
 
+
 #-------- Investigate Variable(s)-----------------------------------
 # for var in vars....
+#add second field to function which is optional and specifies a list of vars to do it on.
+# if blank it does it for all vars.
+
 
 #-------- Modifying Variable Functions -----------------------------
 def modifyClassVariable(data):

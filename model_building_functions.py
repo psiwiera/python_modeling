@@ -9,12 +9,14 @@ import matplotlib.pyplot as plt
 import pylab as pl
 #import psycopg2
 import pandas
+from StringIO import StringIO
 
 
 # Model functions
 def logReg (X,y):
 	model = sklm.LogisticRegression()
 	model.fit(X,y)
+	Print 'Logistic Regression Model Results --------------------------'
 	print 'Model coefficients: '
 	print model.coef_ 
 	print 'Model intercept: '
@@ -23,9 +25,27 @@ def logReg (X,y):
 	return model
 
 def decTree(X,y):
-	model = tree.DecisionTreeClassifier()
+	model = tree.DecisionTreeClassifier(criterion='gini', splitter='best', max_depth=None, 
+		min_samples_split=2, min_samples_leaf=1, max_features=None, random_state=None, 
+		min_density=None, compute_importances=None, max_leaf_nodes=None)
 	model.fit(X,y)
-	tree.export_graphviz(model, out_file='tree.dot')  
+	print 'Decision Tree Model Results --------------------------------'
+	print 'Feature importances: '
+	print model.feature_importances_
+	print 'Tree'
+	#tree = StringIO()
+	#tree = tree.export_graphviz(model, out_file='tree.dot')
+	# sprint tree.getvalue()
+
+# Use cross validation to build model.
+def crossValScore(X,y, unbuilt_model):
+	cross_val_score(unbuilt_model, X, y, cv=10) 
+
+#---------- Visualisation Functions
+def plotDecTree(tree, RESULTS_DIR):
+	# saves the model in dot format to visualise using GraphViz
+	tree = tree.export_graphviz(model, out_file=RESULTS_DIR + 'tree.dot')
+	print.tree
 
 # Define function to Plot ROC curve
 def plotRocCurve(classifiers):
