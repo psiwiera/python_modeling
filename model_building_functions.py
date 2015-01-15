@@ -9,18 +9,18 @@ import matplotlib.pyplot as plt
 import pylab as pl
 #import psycopg2
 import pandas
-from StringIO import StringIO
+from io import StringIO
 
 
 # Model functions
 def logReg (X,y):
 	model = sklm.LogisticRegression()
 	model.fit(X,y)
-	Print 'Logistic Regression Model Results --------------------------'
-	print 'Model coefficients: '
-	print model.coef_ 
-	print 'Model intercept: '
-	print model.intercept_
+	print('Logistic Regression Model Results --------------------------')
+	print('Model coefficients: ')
+	print(model.coef_)
+	print('Model intercept: ')
+	print(model.intercept_)
 
 	return model
 
@@ -29,10 +29,10 @@ def decTree(X,y):
 		min_samples_split=2, min_samples_leaf=1, max_features=None, random_state=None, 
 		min_density=None, compute_importances=None, max_leaf_nodes=None)
 	model.fit(X,y)
-	print 'Decision Tree Model Results --------------------------------'
-	print 'Feature importances: '
-	print model.feature_importances_
-	print 'Tree'
+	print('Decision Tree Model Results --------------------------------')
+	print('Feature importances: ')
+	print(model.feature_importances_)
+	print('Tree')
 	#tree = StringIO()
 	#tree = tree.export_graphviz(model, out_file='tree.dot')
 	# sprint tree.getvalue()

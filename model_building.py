@@ -25,4 +25,4 @@ def simpleModel(np_data):
 
 
 if __name__ == "__main__":
-	print 'Please run this script from the machine_learning_master script'
+	print('Please run this script from the machine_learning_master script')

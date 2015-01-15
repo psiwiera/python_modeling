@@ -28,6 +28,6 @@ if __name__ == '__main__':
 			sep = ' ', #using this to set what separator is used (e.g. , or | etc)
 			header = 0) #this tells the parser if there is a header and on which row
 	except IOError:
-		print 'cannot open file'
+		print('cannot open file')
 	unittest.main(data)
 
