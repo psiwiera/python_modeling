@@ -38,6 +38,19 @@ def csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR):
 	print('Data Load Completed Successfully')
 	return data
 
+# function to setup a pg connection
+def pgconnect():
+    try:
+        # Set up a database connection. 
+        # Note exchange localdb with hodacstag and localhost with dasgpdb01 
+        # include in try..catch in case the connection fails
+        db = postgresql.open("pq://localhost/localdb")
+        return db
+    except Exception:
+        # This is pretty ugly... probably a better way
+        sys.exit('Cannot open database connection')
+        
+
 # define function to read in data for the avazu kaggle
 #df1 = psqlLoad('training_sample','kaggle_avazu',columns='id,click')
 #df2 = psqlLoad('training_sample','kaggle_avazu',columns='*')
@@ -50,71 +63,70 @@ def psqlLoad(table, schema, columns='*'):
     #import numpy
     # May need to think about SQL injection
     
-    # Use a try catch to test whether we can get a connection
-    # No doubt we could make this a bit cleaner
-    try:
-        # Set up a database connection. 
-        # Note exchange localdb with hodacstag and localhost with dasgpdb01 
-        # include in try..catch in case the connection fails
-        db = postgresql.open("pq://localhost/localdb")
-    except Exception:
-        print('Cannot open database connection')
+    # setup a connection
+    db = pgconnect()
+
+    # determine the columns to use
+    if columns=='*':
+        columns_ps=db.prepare("select column_name from information_schema.columns where table_name='" + table + "' and table_schema='" + schema + "'")
+        columns=numpy.array(columns_ps())
+        columns_array = columns.flatten()
+        columns_string = ",".join(columns_array)
+    # if a simple string of comma separated columns is used
+    elif type(columns) is str:
+        columns_string = columns
+        columns_array = columns.split(',')
     else:
-        # ought to include some testing of whether the columns/table/schema exist
-        # handle different column input types
-        # if the default or * is used
-        if columns=='*':
-            columns_ps=db.prepare("select column_name from information_schema.columns where table_name='" + table + "' and table_schema='" + schema + "'")
-            columns=numpy.array(columns_ps())
-            columns_array = columns.flatten()
-            columns_string = ",".join(columns_array)
-        # if a simple string of comma separated columns is used
-        elif type(columns) is str:
-            columns_string = columns
-            columns_array = columns.split(',')
-        else:
-            columns_array = columns
-            columns_string = ",".join(columns)
-            
-        # prepare the statement
-        data_ps = db.prepare("select " + columns_string + " from " + schema + "." + table )
-        # data_ps = db.prepare("select * from " + schema + "." + table )
-        
-        # Read data from the SQL command into a numpy array and convert to a dataframe
-        data=numpy.array(data_ps())
-        df = pandas.DataFrame(data)
-        
-        # add the columns to the dataframe
-        df.columns = columns_array
-        
-        # return the dataframe
-        return df
+        columns_array = columns
+        columns_string = ",".join(columns)
+
+    # prepare the statement
+    data_ps = db.prepare("select " + columns_string + " from " + schema + "." + table )
+    # data_ps = db.prepare("select * from " + schema + "." + table )
+
+    # Read data from the SQL command into a numpy array and convert to a dataframe
+    data=numpy.array(data_ps())
+    df = pandas.DataFrame(data)
+
+    # add the columns to the dataframe
+    df.columns = columns_array
+
+    # return the dataframe
+    return df
 
 
-# Define a function to run all SQL files found in a given directory, run in order of name
-def run_dir_sql_scripts(directory):
+# Define a function to find all SQL files found in a given directory, sorted in order of name
+def get_dir_sql_scripts(directory):
 	"Function which provides as its output a list of SQL scripts located in the input directory "
-	file_list = glob.glob(directory + '*.sql')
+	file_list = glob.glob(directory + '/*.sql')
 	file_list.sort()
-	run_sql_scripts(file_list)
+	return file_list
     
-# Define a function to run a SQL script(s) 
-# example: /Users/mthomson/sql/kaggle/avazu/variable_1.sql
-# The input is a list of files to run
-# This function currently runs using psql, if we get py-postgresql working 
-# then I wonder if we can use that.....
-def run_sql_scripts(file_list):
-	"Function runs a number of SQL scripts in a single transaction using PSQL. Settings may need to be set within the code at the moment"
-	# Note that they need to be in the correct order
-	# prepend the cat command
-	file_list.insert(0,'cat')
-	# In order to only require the user to enter their password once we need to cat all the files together
-	# and pass to psql as one transaction
-	ps1 = subprocess.Popen(file_list, stdout=subprocess.PIPE)
-	ps2 = subprocess.Popen(("/Applications/pgAdmin3.app/Contents/SharedSupport/psql", "--host=localhost", "--port=5432", "--dbname=localdb", "-1", "-f", "-"), stdin=ps1.stdout)
-	# the wait command means that it waits for the user to enter their password before continuing
-	ps2.wait()
-
+# Define a function to run SQL script(s) in a directory
+# example: /Users/mthomson/sql/kaggle/avazu/variables/
+# The input is a directory containing sql files to run
+def run_sql_scripts(directory):
+    # setup a pg connection
+    db = pgconnect()
+    
+    scripts = get_dir_sql_scripts(directory)
+    numScripts = len(scripts)
+    
+    for i,sqlFile in enumerate(scripts):
+        print('Running script '+str(i+1)+' of '+str(numScripts))
+        f = open(sqlFile,'r')
+        db.execute(f.read())
+        f.close()
+	
+    
+# define function to run single script
+def run_single_sql_script(file):
+    # setup a pg connection
+    db = pgconnect()
+              
+    f = open(file,'r')
+    db.execute(f.read())
+    f.close()
 
 
 if __name__ == "__main__":
