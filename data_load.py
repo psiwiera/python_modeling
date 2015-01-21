@@ -9,6 +9,7 @@ from sqlalchemy import create_engine
 import matplotlib.pyplot as plt
 import sys
 import postgresql
+import glob
 
 
 def csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR):
@@ -50,7 +51,12 @@ def pgconnect():
         return db
     except Exception:
         # This is pretty ugly... probably a better way
-        sys.exit('Cannot open database connection')
+        # using the sys.exit() means you don't get the 
+        # full traceback of the error. This is fine for ipython 
+        # but exits python from a shell command - which is why its
+        # removed
+        # sys.exit('Cannot open database connection')
+        print('Cannot open database connection')
         
 
 # define function to read in data for the avazu kaggle
@@ -98,6 +104,7 @@ def psqlLoad(table, schema, columns='*'):
 
 
 # Define a function to find all SQL files found in a given directory, sorted in order of name
+# note currently there is no error handling for if you enter an empty directory or anything like that
 def get_dir_sql_scripts(directory):
 	"Function which provides as its output a list of SQL scripts located in the input directory "
 	file_list = glob.glob(directory + '/*.sql')
