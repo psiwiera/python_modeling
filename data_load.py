@@ -7,6 +7,8 @@ import pandas as pd
 import pandas.io.sql as psql
 from sqlalchemy import create_engine
 import matplotlib.pyplot as plt
+import sys
+import postgresql
 
 
 def csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR):
@@ -69,7 +71,7 @@ def psqlLoad(table, schema, columns='*'):
     # determine the columns to use
     if columns=='*':
         columns_ps=db.prepare("select column_name from information_schema.columns where table_name='" + table + "' and table_schema='" + schema + "'")
-        columns=numpy.array(columns_ps())
+        columns=np.array(columns_ps())
         columns_array = columns.flatten()
         columns_string = ",".join(columns_array)
     # if a simple string of comma separated columns is used
@@ -85,8 +87,8 @@ def psqlLoad(table, schema, columns='*'):
     # data_ps = db.prepare("select * from " + schema + "." + table )
 
     # Read data from the SQL command into a numpy array and convert to a dataframe
-    data=numpy.array(data_ps())
-    df = pandas.DataFrame(data)
+    data=np.array(data_ps())
+    df = pd.DataFrame(data)
 
     # add the columns to the dataframe
     df.columns = columns_array
