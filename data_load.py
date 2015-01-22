@@ -93,8 +93,8 @@ def psqlLoad(table, schema, columns='*'):
     # data_ps = db.prepare("select * from " + schema + "." + table )
 
     # Read data from the SQL command into a numpy array and convert to a dataframe
-    data=np.array(data_ps())
-    df = pd.DataFrame(data)
+    # data=np.array(data_ps())
+    df = pd.DataFrame(data_ps())
 
     # add the columns to the dataframe
     df.columns = columns_array
