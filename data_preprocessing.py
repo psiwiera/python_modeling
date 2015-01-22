@@ -7,8 +7,8 @@ import data_preprocessing_functions as ppfuncs
 
 def main(data, DATA_OUTPUT_DIR):
 	
-	print 'Summary information of the dataset: '  
-	print data.info() # this will tell 
+	print('Summary information of the dataset: ')
+	print(data.info()) # this will tell 
 	# you how many missing values by variable.
 	# Can use regex to replace values in a dataframe
 
@@ -57,4 +57,4 @@ def main(data, DATA_OUTPUT_DIR):
 	return data_np_array
 
 if __name__ == "__main__":
-	print 'Please run this script from the machine_learning_master script'
+	print('Please run this script from the machine_learning_master script')
