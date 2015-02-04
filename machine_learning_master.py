@@ -17,9 +17,11 @@ RESULTS_OUTPUT_DIR = dir + 'results/'
 initial_data = data_load.csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR)
 # if postgress
 # initial_data = data_load.postgres(???)
+
 # run preprocessing script
-processed_data_np_array = data_preprocessing.main(initial_data, DATA_OUTPUT_DIR)
+data_np_array, y = data_preprocessing.main(initial_data, DATA_OUTPUT_DIR)
+
 # build initial models
-model_building.simpleModel(processed_data_np_array)
+model_building.modelsBuild(data_np_array, y)
 # evaluation
 # to add

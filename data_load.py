@@ -17,25 +17,25 @@ def csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR):
 			sep = ' ', #using this to set what separator is used (e.g. , or | etc)
 			header = 0) #this tells the parser if there is a header and on which row
 	except IOError:
-		print 'cannot open file'
+		print ('cannot open file')
 	# alternatively reading data from a sql db
 	# create function/separate python script for people to use.
 
 	#----------Check Initial Data Load----------
 	# Check the dataset is as expected and the data types have been interpreted correctly.
 	# check data type for each data type
-	print data.dtypes
+	print (data.dtypes)
 	# Look at first few rows of data to check read in correctly
-	print data.head()
+	print (data.head())
 	# look at summary statistics of dataset to check if as expected
-	print data.describe()
-	print data.info()
+	print (data.describe())
+	print (data.info())
 
 	# More detailed analysis of specific variables
 	# plot histogram of a variable grouped by a categorical var
 	#data['check_status'].hist(by=data['duration'])
 	#plt.savefig(RESULTS_OUTPUT_DIR + 'test2.png')
-	print 'Data Load Completed Successfully'
+	print ('Data Load Completed Successfully')
 	return data
 
 # define function to read in data for the avazu kaggle
@@ -53,4 +53,4 @@ def psqlLoad():
 	return (X,y,df)
 
 if __name__ == "__main__":
-	print 'Please run this script from the machine_learning_master script'
+	print ('Please run this script from the machine_learning_master script')
