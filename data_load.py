@@ -8,8 +8,9 @@ import pandas.io.sql as psql
 from sqlalchemy import create_engine
 import matplotlib.pyplot as plt
 import sys
-import postgresql
+import psycopg2
 import glob
+from sqlalchemy import create_engine
 
 
 def csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR):
@@ -58,17 +59,19 @@ def csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR):
 >>>>>>> origin/master
 	return data
 
+# setup a connection
 # function to setup a pg connection
+# import psycopg2
 def pgconnect():
     try:
         # Set up a database connection. 
         # Note exchange localdb with hodacstag and localhost with dasgpdb01 
         # include in try..catch in case the connection fails
-        db = postgresql.open("pq://localhost/localdb")
-        return db
+        conn = psycopg2.connect("host=localhost dbname=localdb")
+        return conn
     except Exception:
         # This is pretty ugly... probably a better way
-        # using the sys.exit() means you don't get the 
+        # using the sys.exit() means you don't get the 
         # full traceback of the error. This is fine for ipython 
         # but exits python from a shell command - which is why its
         # removed
@@ -82,43 +85,39 @@ def pgconnect():
 #df3 = psqlLoad('training_sample','kaggle_avazu',columns=['id','click'])
 #df4 = psqlLoad('training_sample','kaggle_avazu')
 def psqlLoad(table, schema, columns='*'):
-    # Use py-postgresql because it handles the authentication stuff
     #import pandas
-    #import postgresql
-    #import numpy
-    # May need to think about SQL injection
-    
-    # setup a connection
-    db = pgconnect()
+    #import psycopg2
+    # May need to think about SQL injection - don't worry about it for the time being
 
     # determine the columns to use
-    if columns=='*':
-        columns_ps=db.prepare("select column_name from information_schema.columns where table_name='" + table + "' and table_schema='" + schema + "'")
-        columns=np.array(columns_ps())
-        columns_array = columns.flatten()
-        columns_string = ",".join(columns_array)
-    # if a simple string of comma separated columns is used
-    elif type(columns) is str:
-        columns_string = columns
-        columns_array = columns.split(',')
-    else:
-        columns_array = columns
+    # handle if a list is used
+    if type(columns) is list:
         columns_string = ",".join(columns)
+    else:
+        # otherwise assume the input is a string (or the default)
+        columns_string = columns
 
-    # prepare the statement
-    data_ps = db.prepare("select " + columns_string + " from " + schema + "." + table )
-    # data_ps = db.prepare("select * from " + schema + "." + table )
+    # setup a connection
+    conn = pgconnect()
 
-    # Read data from the SQL command into a numpy array and convert to a dataframe
-    data=np.array(data_ps())
-    df = pd.DataFrame(data)
-
-    # add the columns to the dataframe
-    df.columns = columns_array
+    # build the query - as I say currently this is vulnerable to SQL injection
+    # but I don't think we need to worry - anyone who has the priveleges needed
+    # to run this command would also have the privileges to do what they like
+    # to the database anyway...
+    sql = "SELECT " + columns_string + " FROM " + schema + "." + table + ";"
+    
+    # Read data from the SQL command into a dataframe
+    df = pd.read_sql(sql, conn)
 
     # return the dataframe
     return df
 
+
+# define a function to write a pandas dataframe back to the database
+def psqlWrite(df, table_name, schema_name):
+    engine = create_engine(r'postgresql://localhost/localdb')
+    # Need to include some error handling to improve this a bit...
+    df.to_sql(table_name, engine, schema=schema_name, if_exists='fail') 
 
 # Define a function to find all SQL files found in a given directory, sorted in order of name
 # note currently there is no error handling for if you enter an empty directory or anything like that
@@ -133,26 +132,22 @@ def get_dir_sql_scripts(directory):
 # The input is a directory containing sql files to run
 def run_sql_scripts(directory):
     # setup a pg connection
-    db = pgconnect()
+    conn = pgconnect()
+    db=conn.cursor()
     
     scripts = get_dir_sql_scripts(directory)
     numScripts = len(scripts)
     
     for i,sqlFile in enumerate(scripts):
         print('Running script '+str(i+1)+' of '+str(numScripts))
-        f = open(sqlFile,'r')
-        db.execute(f.read())
-        f.close()
-	
+        db.execute(open(sqlFile, "r").read())
     
 # define function to run single script
 def run_single_sql_script(file):
     # setup a pg connection
-    db = pgconnect()
-              
-    f = open(file,'r')
-    db.execute(f.read())
-    f.close()
+    conn = pgconnect()
+    db=conn.cursor()
+    db.execute(open(file, "r").read())
 
 
 if __name__ == "__main__":
