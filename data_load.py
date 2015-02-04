@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import sys
 import psycopg2
 import glob
+from sqlalchemy import create_engine
 
 
 def csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR):
@@ -83,6 +84,9 @@ def psqlLoad(table, schema, columns='*'):
     conn = pgconnect()
 
     # build the query - as I say currently this is vulnerable to SQL injection
+    # but I don't think we need to worry - anyone who has the priveleges needed
+    # to run this command would also have the privileges to do what they like
+    # to the database anyway...
     sql = "SELECT " + columns_string + " FROM " + schema + "." + table + ";"
     
     # Read data from the SQL command into a dataframe
@@ -91,6 +95,12 @@ def psqlLoad(table, schema, columns='*'):
     # return the dataframe
     return df
 
+
+# define a function to write a pandas dataframe back to the database
+def psqlWrite(df, table_name, schema_name):
+    engine = create_engine(r'postgresql://localhost/localdb')
+    # Need to include some error handling to improve this a bit...
+    df.to_sql(table_name, engine, schema=schema_name, if_exists='fail') 
 
 # Define a function to find all SQL files found in a given directory, sorted in order of name
 # note currently there is no error handling for if you enter an empty directory or anything like that
