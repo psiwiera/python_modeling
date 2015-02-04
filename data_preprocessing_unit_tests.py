@@ -65,7 +65,19 @@ class DataProcessingTest(unittest.TestCase):
 		# expected.
 
 if __name__ == '__main__':
+<<<<<<< HEAD
 	unittest.main()
 
+=======
+	TEST_INPUT_DIR = '/Users/tobybalfre/Documents/Data Science and Analytics/Code Library/python/machine learning/python_modeling_unit_testing_branch/data/'
+	test_file_name =  'german_credit_car_fraud_testcut.ssv'
+	try:
+		data = pd.read_csv(INPUT_DIR + file_name,
+			sep = ' ', #using this to set what separator is used (e.g. , or | etc)
+			header = 0) #this tells the parser if there is a header and on which row
+	except IOError:
+		print('cannot open file')
+	unittest.main(data)
+>>>>>>> origin/master
 
 	

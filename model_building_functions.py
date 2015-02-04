@@ -12,6 +12,7 @@ import pylab as pl
 #import psycopg2
 import pandas
 from io import StringIO
+<<<<<<< HEAD
 #from graphviz import Graph 
 import pydot 
 from inspect import getmembers
@@ -46,6 +47,8 @@ def logReg (model, X,y):
 	print (model.coef_)
 	print ('Model intercept: ')
 	print (model.intercept_)
+=======
+>>>>>>> origin/master
 
 	return model
 
@@ -56,6 +59,7 @@ def decTree(model, X, y):
 	print ('Feature importances: ')
 	print (model.feature_importances_)
 
+<<<<<<< HEAD
 	print(getmembers(model.tree_))
 
 	return model
@@ -79,6 +83,32 @@ def rfeCv(modEstimator,X,y):
 
 	return rfecv
 
+=======
+# Model functions
+def logReg (X,y):
+	model = sklm.LogisticRegression()
+	model.fit(X,y)
+	print('Logistic Regression Model Results --------------------------')
+	print('Model coefficients: ')
+	print(model.coef_)
+	print('Model intercept: ')
+	print(model.intercept_)
+
+	return model
+
+def decTree(X,y):
+	model = tree.DecisionTreeClassifier(criterion='gini', splitter='best', max_depth=None, 
+		min_samples_split=2, min_samples_leaf=1, max_features=None, random_state=None, 
+		min_density=None, compute_importances=None, max_leaf_nodes=None)
+	model.fit(X,y)
+	print('Decision Tree Model Results --------------------------------')
+	print('Feature importances: ')
+	print(model.feature_importances_)
+	print('Tree')
+	#tree = StringIO()
+	#tree = tree.export_graphviz(model, out_file='tree.dot')
+	# sprint tree.getvalue()
+>>>>>>> origin/master
 
 # Use cross validation to build model.
 def crossValScore(unbuilt_model,X,y):

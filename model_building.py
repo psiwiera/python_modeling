@@ -49,4 +49,8 @@ def modelsBuild(np_data, y):
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
 	print ('Please run this script from the machine_learning_master script')
+=======
+	print('Please run this script from the machine_learning_master script')
+>>>>>>> origin/master
