@@ -41,16 +41,10 @@ def modelsBuild(np_data, y):
 	
 
 	# Recursively build model to determine features
-	logreg1 = sklm.LogisticRegression(penalty='l2', dual=False, tol=0.0001, C=1.0, 
+	logreg2 = sklm.LogisticRegression(penalty='l2', dual=False, tol=0.0001, C=1.0, 
 		fit_intercept=True, intercept_scaling=1, class_weight=None, random_state=None)
-	modelRfeLogReg2 = modfuncs.rfeCv(logreg1, X_train, y_train)
-
-
+	modelRfeLogReg2 = modfuncs.rfeCv(logreg2, X_train, y_train)
 
 
 if __name__ == "__main__":
-<<<<<<< HEAD
 	print ('Please run this script from the machine_learning_master script')
-=======
-	print('Please run this script from the machine_learning_master script')
->>>>>>> origin/master
