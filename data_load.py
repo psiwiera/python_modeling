@@ -20,25 +20,42 @@ def csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR):
 			sep = ' ', #using this to set what separator is used (e.g. , or | etc)
 			header = 0) #this tells the parser if there is a header and on which row
 	except IOError:
+<<<<<<< HEAD
+		print ('cannot open file')
+=======
 		print('cannot open file')
+>>>>>>> origin/master
 	# alternatively reading data from a sql db
 	# create function/separate python script for people to use.
 
 	#----------Check Initial Data Load----------
 	# Check the dataset is as expected and the data types have been interpreted correctly.
 	# check data type for each data type
+<<<<<<< HEAD
+	print (data.dtypes)
+	# Look at first few rows of data to check read in correctly
+	print (data.head())
+	# look at summary statistics of dataset to check if as expected
+	print (data.describe())
+	print (data.info())
+=======
 	print(data.dtypes)
 	# Look at first few rows of data to check read in correctly
 	print(data.head())
 	# look at summary statistics of dataset to check if as expected
 	print(data.describe())
 	print(data.info())
+>>>>>>> origin/master
 
 	# More detailed analysis of specific variables
 	# plot histogram of a variable grouped by a categorical var
 	#data['check_status'].hist(by=data['duration'])
 	#plt.savefig(RESULTS_OUTPUT_DIR + 'test2.png')
+<<<<<<< HEAD
+	print ('Data Load Completed Successfully')
+=======
 	print('Data Load Completed Successfully')
+>>>>>>> origin/master
 	return data
 
 # function to setup a pg connection
@@ -139,4 +156,8 @@ def run_single_sql_script(file):
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
+	print ('Please run this script from the machine_learning_master script')
+=======
 	print('Please run this script from the machine_learning_master script')
+>>>>>>> origin/master
