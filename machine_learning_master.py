@@ -1,27 +1,40 @@
-
-# import sub scripts
+# import sub scripts and libraries
+import logging
+import datetime
 import data_load
 import data_preprocessing
-import model_building
-import os
-dir = os.path.dirname(__file__)
+import model_building   
+import utils
+import pprint as pp # to make log entries nicer to read
+# get the settings for the run
+import settings
 
 
-file_name = 'german_credit_car_fraud.ssv'
-INPUT_DIR = dir + 'data/'
-DATA_OUTPUT_DIR = dir + 'data/'
-RESULTS_OUTPUT_DIR = dir + 'results/'
+#Setup the logger
+utils.setLog(settings.LOGGING_FILE)
+logger=logging.getLogger('Master')
+
+#Log start of Full process
+utils.logInfoTime(logger, 'Started')
+
 
 # run data load script
-# if csv
-initial_data = data_load.csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR)
-# if postgress
-# initial_data = data_load.postgres(???)
+logger.info('--------------------------------- Data Load -----------------------------------')
+utils.logInfoTime(logger, 'Started Data Load')
+# initial_data = data_load.psqlLoad(settings.INPUT_TABLE, settings.INPUT_SCHEMA, columns='*')
+initial_data = data_load.csvfile(settings.INPUT_DIR, settings.file_name, settings.RESULTS_OUTPUT_DIR)
+utils.logInfoTime(logger, 'Finished Data Load')
 
 # run preprocessing script
-data_np_array, y = data_preprocessing.main(initial_data, DATA_OUTPUT_DIR)
+logger.info('--------------------------------- Data Preprocessing -----------------------------------')
+utils.logInfoTime(logger, 'Started Pre-Processing')
+data_np_array, y_np_array, var_results = data_preprocessing.main(initial_data)
+utils.logInfoTime(logger, 'Finished Pre-Processing')
 
-# build initial models
-model_building.modelsBuild(data_np_array, y)
-# evaluation
-# to add
+# build models
+logger.info('--------------------------------- Model Building -----------------------------------')
+utils.logInfoTime(logger, 'Started Model Building')
+model_building.modelsBuild(data_np_array, y_np_array, var_results, logger)
+utils.logInfoTime(logger, 'Finished Model Building')
+
+utils.logInfoTime(logger, 'Finished')
