@@ -6,16 +6,21 @@ import data_load
 import data_preprocessing_functions as ppfuncs 
 import pandas as pd
 import utils
+import logging
+from sklearn.metrics import roc_curve, auc
+import model_building_functions as modFuncs
 
-def loadDataToScore(input_table, input_schema):
+def loadDataToScore(input_dir,file_name,results_output_dir):
     # build the vector to score
-    sql = """DROP TABLE IF EXISTS """+input_schema+"""."""+input_table+""";
-        CREATE TABLE """+input_schema+"""."""+input_table+""" AS
-        ;"""
-    data_load.run_sql_string(sql,'Exec')
+    #sql = """DROP TABLE IF EXISTS """+input_schema+"""."""+input_table+""";
+    #    CREATE TABLE """+input_schema+"""."""+input_table+""" AS
+    #    ;"""
+    #data_load.run_sql_string(sql,'Exec')
 
+    initial_data = data_load.csvfile(input_dir,file_name,results_output_dir)
+    
     # Now read in the data to score
-    initial_data = data_load.psqlLoad(input_table, input_schema, columns='*','Exec')
+    #initial_data = data_load.psqlLoad(input_table, input_schema, columns='*',logtype='Exec')
     data = initial_data
     # logger.info('Initial data size')
     # logger.info(data.shape)
@@ -45,7 +50,7 @@ def renameCols(output_df,var_list):
     new_cols_dict={}
     for old_col in var_list:
         # include some text replacements here
-        new_col=old_col.replace().replace('[','_').replace(',','_').replace(' ','_').replace('(','').replace(')','')
+        new_col=old_col.replace('[','_').replace(',','_').replace(' ','_').replace('(','').replace(')','')
         new_col=new_col[0:62]
         new_cols_dict[old_col]=new_col
         
@@ -90,6 +95,7 @@ def applyFeatureSelection(data,MODELS_OUTPUT_DIR):
     return data,var_results
    
 def applyModel(model_file,data,initial_data,RESULTS_OUTPUT_DIR,test_pickle_file):
+    logger=logging.getLogger('Exec.functions.applyModel')
     # un-pickle the relevant model 
     clf = joblib.load(model_file) 
 
@@ -111,7 +117,7 @@ def applyModel(model_file,data,initial_data,RESULTS_OUTPUT_DIR,test_pickle_file)
     # logger.info('final output size')
     # logger.info(output_df.shape)
 
-    output_df = pd.merge(d,output_df,how='inner',left_index=True,right_index=True) 
+    #output_df = pd.merge(d,output_df,how='inner',left_index=True,right_index=True) 
     
     logger.info('--------------------------------- Get predicted values -----------------------------------')
     # build a CSV file of the roc curve to help find the correct cutoff value

@@ -21,19 +21,19 @@ import data_preprocessing as pproc
 import model_execution_functions as mexec
 
 #Setup the logger
-logger = utils.setLog(settings.logging_file_exec,'Exec')   
+logger = utils.setLog(settings.logging_file_exec,logtype='Exec') 
+logger = logging.getLogger('Exec.model_execution')
     
 logger.info('Started %s', datetime.datetime.now().time().isoformat())
 logger.info('--------------------------------- Data Load -----------------------------------')
-data, initial_data = mexec.loadDataToScore(settings.input_table_exec, settings.input_schema_exec)
+data, initial_data = mexec.loadDataToScore(settings.INPUT_DIR,settings.FILE_NAME_EXEC,settings.RESULTS_OUTPUT_DIR)
 
 logger.info('--------------------------------- Apply Pre-Processing Steps-----------------------------------')
 data, var_results = pproc.main(data,execute=True)
 
 if settings.feature_selection:
     data,var_results = mexec.applyFeatureSelection(data,settings.MODELS_OUTPUT_DIR)
-   
-
+    
 logger.info('--------------------------------- Apply Model -----------------------------------')
 output_df,output,clf = mexec.applyModel(settings.model_pickle_file,data,initial_data,settings.RESULTS_OUTPUT_DIR,settings.MODELS_OUTPUT_DIR + '/test_data.pkl')
 
@@ -53,18 +53,20 @@ output_df=output_df[var_list]
 output_df = mexec.renameCols(output_df,var_list)
 
 # check the final dataframe after all the merges
-mexec.qaFinalDF(output_df,initial_data,output)
+#mexec.qaFinalDF(output_df,initial_data,output)
 
 logger.info('--------------------------------- Write scored data back to db -----------------------------------')
 # drop previous table and index
-data_load.run_sql_string("""DROP TABLE IF EXISTS """+settings.input_schema_exec+"""."""+settings.output_table_exec+""" CASCADE;""",'Exec')
-data_load.run_sql_string("""DROP INDEX IF EXISTS """+settings.input_schema_exec+""".ix_"""+settings.input_schema_exec+"""_"""+settings.output_table_exec+"""_pd_index CASCADE;""",'Exec')
+#data_load.run_sql_string("""DROP TABLE IF EXISTS """+settings.input_schema_exec+"""."""+settings.output_table_exec+""" CASCADE;""",'Exec')
+#data_load.run_sql_string("""DROP INDEX IF EXISTS """+settings.input_schema_exec+""".ix_"""+settings.input_schema_exec+"""_"""+settings.output_table_exec+"""_pd_index CASCADE;""",'Exec')
 # write to db
-data_load.psqlBulkWrite(output_df, settings.output_table_exec, settings.input_schema_exec,'Exec')
+#data_load.psqlBulkWrite(output_df, settings.output_table_exec, settings.input_schema_exec,'Exec')
+
+output_df.to_csv(settings.output_file)
 
 # Now run any rules or anomaly detection and so on
 logger.info('--------------------------------- Apply Rules -----------------------------------')
-mexec.applyRules(settings.input_schema_exec,settings.output_table_exec)
+#mexec.applyRules(settings.input_schema_exec,settings.output_table_exec)
 
 
 print('model execution complete')
