@@ -55,3 +55,4 @@ unittest2py3k==0.5.1
 vincent==0.4.4
 virtualenv==12.0.5
 xlrd==0.9.3
+Python==3.4
