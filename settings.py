@@ -4,7 +4,8 @@ dir = os.path.dirname(__file__)
 # set the values for the input data
 #INPUT_TABLE = 'risk_scoring_master_vector'
 #INPUT_SCHEMA = 'analytics_sandpit'
-file_name = 'german_credit_car_fraud.ssv'
+#file_name = 'german_credit_car_fraud.ssv'
+file_name = 'credit_risk_kaggle.csv'
 INPUT_DIR = dir + '/data/'
 
 
