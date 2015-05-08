@@ -108,9 +108,12 @@ def main(data, execute=False):
         
     
     #Specify which categorical variables to convert to binary
-    catVars = {'check_status', 'credit_history', 'purpose', 'savings', 'pres_employ_since',
-    'pers_status', 'other_debtors', 'property', 'instal_plans', 'housing', 'job', 'telephone',
-    'foreign_worker', 'mod_status'}
+    #!!!!!!!!!!------    ---------!!!!!!!!!!!
+    #All variables in new data set are numerical, no categories so don't want to convert anything to binary.
+    #catVars = {'check_status', 'credit_history', 'purpose', 'savings', 'pres_employ_since',
+    #'pers_status', 'other_debtors', 'property', 'instal_plans', 'housing', 'job', 'telephone',
+    #'foreign_worker', 'mod_status'}
+    catvars={}
     data = ppfuncs.catToBinary(data, catVars)
     print('data size after catToBinary')
     print(data.shape)

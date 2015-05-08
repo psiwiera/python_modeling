@@ -4,8 +4,8 @@ dir = os.path.dirname(__file__)
 # set the values for the input data
 #INPUT_TABLE = 'risk_scoring_master_vector'
 #INPUT_SCHEMA = 'analytics_sandpit'
-file_name = 'german_credit_car_fraud.ssv'
-#file_name = 'credit_risk_kaggle.csv'
+#file_name = 'german_credit_car_fraud.ssv'
+file_name = 'credit_risk_kaggle.csv'
 INPUT_DIR = dir + '/data/'
 
 
@@ -35,7 +35,8 @@ variable_scaling=False #current best model without scaling.
 input_table_exec = 'risk_scoring_ids_to_score'
 input_schema_exec = 'analytics_sandpit'
 output_table_exec = 'risk_scoring_output'
-FILE_NAME_EXEC = 'german_credit_car_fraud_testcut.ssv'
+#FILE_NAME_EXEC = 'german_credit_car_fraud_testcut.ssv'
+FILE_NAME_EXEC = 'credit_risk_kaggle_testcut.ssv'
 output_file = dir+'/results/output_scores.csv'
 logging_file_exec = dir+'/execution_log.log'
 decision_tree=True #If there is a decision tree dot file to parse set this variable

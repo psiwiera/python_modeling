@@ -72,20 +72,24 @@ def catToBinary(data, vars_list):
 	return data
 
 def replaceValuesVar1(data):
-	data['purpose'].replace('A40','Car')
+#!!!!!!!!!!------    ---------!!!!!!!!!!!
+#Not present in the new data set, so removed this line
+#	data['purpose'].replace('A40','Car')
 	
 	return data
 
 # create new variable mapping an existing variable using lookup table
 def mapNewVar1(data):
+#!!!!!!!!!!------    ---------!!!!!!!!!!!
+#Again, these values are not present in the new data set
 	# Similar to an Excel lookup, this converts the values in a variable to new categorical values
-	mapDict = {
-		'A11':'No Savings',
-		'A12':'No Savings',
-		'A13':'Savings',
-		'A14':'Unknown'
-	}
-	data['mod_status'] = data['check_status'].map(mapDict)
+#	mapDict = {
+#		'A11':'No Savings',
+#		'A12':'No Savings',
+#		'A13':'Savings',
+#		'A14':'Unknown'
+#	}
+#	data['mod_status'] = data['check_status'].map(mapDict)
 	
 	return data
 
@@ -102,9 +106,12 @@ def removeFields(data,execute=False):
         logger = logging.getLogger('Exec.Data_Preprocessing.ppfuncs.removeFields')
     # This function drops columns from the data frame. Any variable which is not numerical will need to be
     # dropped. Note this DROPS variables, it does NOT specify which ones to retain in the dataframe.
-    colsToDrop = ['check_status', 'credit_history', 'purpose', 'savings', 'pres_employ_since',
-	'pers_status', 'other_debtors', 'property', 'instal_plans', 'housing', 'job', 'telephone',
-	'foreign_worker', 'mod_status']
+    #!!!!!!!!!!------    ---------!!!!!!!!!!!
+    #Don't want to drop any of these columns, don't exist in new data set
+    #colsToDrop = ['check_status', 'credit_history', 'purpose', 'savings', 'pres_employ_since',
+	#'pers_status', 'other_debtors', 'property', 'instal_plans', 'housing', 'job', 'telephone',
+	#'foreign_worker', 'mod_status']
+	colsToDrop=[]
     
     logger.info('These variables are dropped before the modelling stage: %s', pp.pformat(colsToDrop))
     

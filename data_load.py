@@ -28,7 +28,9 @@ def csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR):
     
     try:
         data = pd.read_csv(INPUT_DIR + file_name,
-                           sep = ' ', #using this to set what separator is used (e.g. , or | etc)
+        #!!!!!!!!!!------    ---------!!!!!!!!!!!
+        #separator changes from ' ' to ','
+                           sep = ',', #using this to set what separator is used (e.g. , or | etc)
                            header = 0) #this tells the parser if there is a header and on which row
         # alternatively reading data from a sql db
         # create function/separate python script for people to use.
