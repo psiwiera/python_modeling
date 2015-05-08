@@ -181,6 +181,16 @@ def main(data, execute=False):
         data, y = ppfuncs.sepClass(data)
         logger.info('Check data frame post class var removal: %s', pp.pformat(data.info()))
 
+
+     #--------Scale variables-------------------------------------
+        logger.info('--------------------------------- Data PP - Scale variables 0-1 -----------------------------------')
+
+        data -= data.min()
+        data /= data.max()
+
+        print("data scaled")
+        print(data.head())
+
     #-----Convert to np array for use with Sklearn-----------------------------
     #print('Pandas dataframe size')
     #print(data.describe())
