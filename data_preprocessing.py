@@ -35,19 +35,19 @@ def main(data, execute=False):
         #Create a data frame with class values following initial load. This will be added to post row selection
         # and outlier removal.
         class_cnts_df = pd.DataFrame()
-        class_cnts_df['Initial Load'] = data['class'].value_counts()
+        class_cnts_df['Initial Load'] = data['SeriousDlqin2yrs'].value_counts()
     
     #--------Filter rows based on knowledge of dataset--------------------------
     if execute==False: 
         logger.info('data size before row selection: %s', data.shape)
         data = ppfuncs.rowSelection(data)
         # Add class values post row selection to class_cnts data frame.
-        class_cnts_df['Post Row Sel'] = data['class'].value_counts()
+        class_cnts_df['Post Row Sel'] = data['SeriousDlqin2yrs'].value_counts()
         logger.info('data size after row selection: %s', data.shape)
     
         var_names = {}
         data = ppfuncs.removeOutliers(data, var_names)
-        class_cnts_df['Post Outlier Rem'] = data['class'].value_counts()
+        class_cnts_df['Post Outlier Rem'] = data['SeriousDlqin2yrs'].value_counts()
         logger.info('post outlier removal: %s', data.shape)
         logger.info('Class distribution post outlier removal, %s', pp.pformat(class_cnts_df))
     

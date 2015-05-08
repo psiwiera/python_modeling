@@ -26,8 +26,8 @@ def pivotTable(data, indexVar, columnsVar, valuesVar):
 def modifyClassVariable(data):
 	# specify what corrections need to take place to the class variable to
 	# ensure it conforms with scikit-learn expected formats.
-	data['SeriousDlqin2yrs'][data['SeriousDlqin2yrs'] == 1] = 0
-	data['SeriousDlqin2yrs'][data['SeriousDlqin2yrs'] == 2] = 1
+	data['SeriousDlqin2yrs'][data['SeriousDlqin2yrs'] == 0] = 0
+	data['SeriousDlqin2yrs'][data['SeriousDlqin2yrs'] == 1] = 1
 
 	return data
 
