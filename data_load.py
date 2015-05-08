@@ -8,7 +8,7 @@ import pandas.io.sql as psql
 from sqlalchemy import create_engine
 import matplotlib.pyplot as plt
 import sys
-import psycopg2
+# import psycopg2
 import glob
 from sqlalchemy import create_engine
 import datetime
@@ -18,6 +18,7 @@ import os
 import logging
 import datetime
 import pprint as pp # to make log entries nicer to read
+
 
 def csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR):
     #specify details of logging (So logs outputs exactly which function fed info into log
