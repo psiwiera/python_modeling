@@ -144,7 +144,9 @@ def main(data, execute=False):
         y=json.loads(x[0])
         f.close()
         
-    # data.dropna(axis = 0) # remove rows which have na values (axis = 1 will remove columns
+    data = data[pd.notnull(data['MonthlyIncome'])]      
+    data = data[pd.notnull(data['NumberOfDependents'])]      
+    #data.dropna(axis=0) # remove rows which have na values (axis = 1 will remove columns
     # with na values)
     # data.interpolate(method='barycentric') # this will replace missing values with an 
     # interpolated value for that variable. Uses Scipy, be careful of what order your rows 
