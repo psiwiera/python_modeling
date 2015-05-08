@@ -26,8 +26,8 @@ def pivotTable(data, indexVar, columnsVar, valuesVar):
 def modifyClassVariable(data):
 	# specify what corrections need to take place to the class variable to
 	# ensure it conforms with scikit-learn expected formats.
-	data['class'][data['class'] == 1] = 0
-	data['class'][data['class'] == 2] = 1
+	data['SeriousDlqin2yrs'][data['SeriousDlqin2yrs'] == 1] = 0
+	data['SeriousDlqin2yrs'][data['SeriousDlqin2yrs'] == 2] = 1
 
 	return data
 
@@ -35,8 +35,8 @@ def sepClass(data):
 	# Separate out class variable from rest of dataset and drop it from that dataset.
 	# This is required by scikit-learn which handles the class separately.
 	# Should be used as a final data preprocessing step before converting to numpy array. 
-	y = data['class']
-	data = data.drop('class', axis=1)
+	y = data['SeriousDlqin2yrs']
+	data = data.drop('SeriousDlqin2yrs', axis=1)
 
 	return data, y
 
@@ -111,7 +111,7 @@ def removeFields(data,execute=False):
     #colsToDrop = ['check_status', 'credit_history', 'purpose', 'savings', 'pres_employ_since',
 	#'pers_status', 'other_debtors', 'property', 'instal_plans', 'housing', 'job', 'telephone',
 	#'foreign_worker', 'mod_status']
-	colsToDrop=[]
+    colsToDrop = []
     
     logger.info('These variables are dropped before the modelling stage: %s', pp.pformat(colsToDrop))
     
