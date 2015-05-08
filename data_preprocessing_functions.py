@@ -26,6 +26,7 @@ def pivotTable(data, indexVar, columnsVar, valuesVar):
 def modifyClassVariable(data):
 	# specify what corrections need to take place to the class variable to
 	# ensure it conforms with scikit-learn expected formats.
+	#!!!!!!!!!!------  Changed 'class' to 'SeriousDlqin2yrs'  ---------!!!!!!!!!!!
 	data['SeriousDlqin2yrs'][data['SeriousDlqin2yrs'] == 0] = 0
 	data['SeriousDlqin2yrs'][data['SeriousDlqin2yrs'] == 1] = 1
 
@@ -34,7 +35,8 @@ def modifyClassVariable(data):
 def sepClass(data):
 	# Separate out class variable from rest of dataset and drop it from that dataset.
 	# This is required by scikit-learn which handles the class separately.
-	# Should be used as a final data preprocessing step before converting to numpy array. 
+	# Should be used as a final data preprocessing step before converting to numpy array.
+	#!!!!!!!!!!------  Changed 'class' to 'SeriousDlqin2yrs'  ---------!!!!!!!!!!! 
 	y = data['SeriousDlqin2yrs']
 	data = data.drop('SeriousDlqin2yrs', axis=1)
 
@@ -80,8 +82,7 @@ def replaceValuesVar1(data):
 
 # create new variable mapping an existing variable using lookup table
 def mapNewVar1(data):
-#!!!!!!!!!!------    ---------!!!!!!!!!!!
-#Again, these values are not present in the new data set
+#!!!!!!!!!!------  Again, these values are not present in the new data set  ---------!!!!!!!!!!!
 	# Similar to an Excel lookup, this converts the values in a variable to new categorical values
 #	mapDict = {
 #		'A11':'No Savings',
@@ -106,8 +107,7 @@ def removeFields(data,execute=False):
         logger = logging.getLogger('Exec.Data_Preprocessing.ppfuncs.removeFields')
     # This function drops columns from the data frame. Any variable which is not numerical will need to be
     # dropped. Note this DROPS variables, it does NOT specify which ones to retain in the dataframe.
-    #!!!!!!!!!!------    ---------!!!!!!!!!!!
-    #Don't want to drop any of these columns, don't exist in new data set
+    #!!!!!!!!!!------  Don't want to drop any of these columns, don't exist in new data set  ---------!!!!!!!!!!!
     #colsToDrop = ['check_status', 'credit_history', 'purpose', 'savings', 'pres_employ_since',
 	#'pers_status', 'other_debtors', 'property', 'instal_plans', 'housing', 'job', 'telephone',
 	#'foreign_worker', 'mod_status']

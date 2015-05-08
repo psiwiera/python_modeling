@@ -34,6 +34,7 @@ def main(data, execute=False):
         data.info()
         #Create a data frame with class values following initial load. This will be added to post row selection
         # and outlier removal.
+        #!!!!!!!!!!------  Changed 'class' to 'SeriousDlqin2yrs'  ---------!!!!!!!!!!!
         class_cnts_df = pd.DataFrame()
         class_cnts_df['Initial Load'] = data['SeriousDlqin2yrs'].value_counts()
     
@@ -41,6 +42,7 @@ def main(data, execute=False):
     if execute==False: 
         logger.info('data size before row selection: %s', data.shape)
         data = ppfuncs.rowSelection(data)
+        #!!!!!!!!!!------  Changed 'class' to 'SeriousDlqin2yrs'  ---------!!!!!!!!!!!
         # Add class values post row selection to class_cnts data frame.
         class_cnts_df['Post Row Sel'] = data['SeriousDlqin2yrs'].value_counts()
         logger.info('data size after row selection: %s', data.shape)
@@ -50,9 +52,9 @@ def main(data, execute=False):
         class_cnts_df['Post Outlier Rem'] = data['SeriousDlqin2yrs'].value_counts()
         logger.info('post outlier removal: %s', data.shape)
         logger.info('Class distribution post outlier removal, %s', pp.pformat(class_cnts_df))
-    
+        #!!!!!!!!!!------ Changed names of data to plot   ---------!!!!!!!!!!!
         # Produce histograms of remaining variables and rows to investigate distributions post outlier removal.
-        hist_data = data[['duration','credit_amount','savings']]
+        hist_data = data[['RevolvingUtilizationOfUnsecuredLines','RevolvingUtilizationOfUnsecuredLines','MonthlyIncome']]
         
         plt.plot()
         hist_data.hist()
@@ -108,12 +110,11 @@ def main(data, execute=False):
         
     
     #Specify which categorical variables to convert to binary
-    #!!!!!!!!!!------    ---------!!!!!!!!!!!
-    #All variables in new data set are numerical, no categories so don't want to convert anything to binary.
+    #!!!!!!!!!!------ All variables in new data set are numerical, no categories so don't want to convert anything to binary ---------!!!!!!!!!!!
     #catVars = {'check_status', 'credit_history', 'purpose', 'savings', 'pres_employ_since',
     #'pers_status', 'other_debtors', 'property', 'instal_plans', 'housing', 'job', 'telephone',
     #'foreign_worker', 'mod_status'}
-    catvars={}
+    catVars={}
     data = ppfuncs.catToBinary(data, catVars)
     print('data size after catToBinary')
     print(data.shape)

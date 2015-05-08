@@ -25,11 +25,10 @@ def csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR):
     logger = logging.getLogger('Master.Data_load.csvfile')
     #---------Load Data-----------------------
     #load csv into pandas data frame using pandas read_csv function
+    #!!!!!!!!!!------  separator changes from ' ' to ','  ---------!!!!!!!!!!!
     
     try:
         data = pd.read_csv(INPUT_DIR + file_name,
-        #!!!!!!!!!!------    ---------!!!!!!!!!!!
-        #separator changes from ' ' to ','
                            sep = ',', #using this to set what separator is used (e.g. , or | etc)
                            header = 0) #this tells the parser if there is a header and on which row
         # alternatively reading data from a sql db
