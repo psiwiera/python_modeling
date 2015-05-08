@@ -111,7 +111,7 @@ def removeFields(data,execute=False):
     #colsToDrop = ['check_status', 'credit_history', 'purpose', 'savings', 'pres_employ_since',
 	#'pers_status', 'other_debtors', 'property', 'instal_plans', 'housing', 'job', 'telephone',
 	#'foreign_worker', 'mod_status']
-    colsToDrop = []
+    colsToDrop = ['ID']
     
     logger.info('These variables are dropped before the modelling stage: %s', pp.pformat(colsToDrop))
     
