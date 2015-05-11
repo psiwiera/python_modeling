@@ -1,0 +1,13 @@
+# Plan for analysis of graphical data using neo4j
+
+#-----------------------------------Creation of dataset---------------------------------------------------------------------------
+# 1. Identify graph/ network data to use as a starting point
+#	Data Set Requirements
+# 2. Need to create a key mapping this graph dataset to the Kaggle Credit Data Set
+# 3. Need python code to write risk rating of dataset from Claire's model into the Neo4j dataset - essentially combining the classification model output to the graph dataset
+
+#-----------------------------------Look into linking to KeyLines?----------------------------------------------------------------
+
+
+#-----------------------------------Neo4j visualise High risk---------------------------------------------------------------------
+1. Write the Neo4j queries that 
