@@ -1,8 +1,15 @@
 # Plan for analysis of graphical data using neo4j
 
+#-----------------------------------WORK TO BE DONE-------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------
+
+0. Install and familiarise with Neo4j
+
 #-----------------------------------Creation of dataset---------------------------------------------------------------------------
 # 1. Identify graph/ network data to use as a starting point
 #	Data Set Requirements
+		a. 150,000 individuals connected
+		b. 
 # 2. Need to create a key mapping this graph dataset to the Kaggle Credit Data Set
 # 3. Need python code to write risk rating of dataset from Claire's model into the Neo4j dataset - essentially combining the classification model output to the graph dataset
 
@@ -11,3 +18,12 @@
 
 #-----------------------------------Neo4j visualise High risk---------------------------------------------------------------------
 1. Write the Neo4j queries that 
+
+
+
+
+#-----------------------------------ANALYSIS SHOWN--------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------
+1. Graph of how high fraud risk individuals are connected to each other (NB: use id column from trasactions to map)
+2. Geographic data included?
+3. Transactional Data
