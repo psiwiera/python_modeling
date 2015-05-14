@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' type='text/css' href='css/keylines.css'/>
+    <script type="text/javascript" src="js/keylines.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+
+    <script type="text/javascript">
+
+    /************************************/
+    /* GLOBAL VARIABLES */ 
+    /************************************/
+    var nodes;
+    var links;
+    console.log(new Date(2014, 0, 1).getTime())
+    /************************************/
+    /* Load KeyLines and general setup  */ 
+    /************************************/
+      window.onload = function () {
+
+        KeyLines.paths({ 
+          assets: 'assets/',
+          flash: { 
+            swf: 'swf/keylines.swf', 
+            swfObject: 'js/swfobject.js', 
+            expressInstall: 'swf/expressInstall.swf' 
+          }
+        });
+
+        // KeyLines.create('kl', function(err, chart) {
+        //   chart.load({
+        //     type: 'LinkChart',
+        //     items: [{id:'id1', type: 'node', x:150, y: 150, t:'Hello World!'}]
+        //   });
+        // });
+
+        KeyLines.create('kl', function(err, chart) {
+          console.log('Testing');
+
+            /**First sample request**/
+          sendQuery('MATCH (n) RETURN n.pers_id, n.for_id;', function (json) {
+            nodes = makeNodes(json.data);
+            // console.log(nodes)
+            chart.load({type: 'LinkChart', items: nodes}, chart.layout);
+          });
+
+          sendQuery('MATCH (a)-[r]->(b) RETURN a.pers_id, b.for_id, r.date, r.time;', function(json) {
+            links = loadlinks(json.data);
+            // console.log(links)
+            chart.merge(links)
+          });
+        
+        });
+
+      };
+
+    /************************************/
+    /* Function to send a query to a Neo4j database  */ 
+    /************************************/
+    function sendQuery (query, callback) {
+      $.ajax({
+        type: 'POST',
+        // This is the url of the cypher end point.
+        url:'http://localhost:7474/db/data/cypher',
+        // send the data with the params approach to avoid Cypher injections  
+        data: JSON.stringify({query: query}),
+        dataType: 'json',
+        contentType: 'application/json',
+        // map to our callback method, first parameter will be json result from neo4j                                                                                                                                                                                           
+        success: callback,
+        error: function (xhr) {
+          console.log(xhr);
+        }
+      });
+    }
+
+    /************************************/
+    /* Parse response into Keylines JSON Format --- LINKS */ 
+    /************************************/
+
+    function loadlinks(links){
+      var linkId = 0;
+        return _.map(links, function(link){
+          return {
+            id: 'link' + linkId++,
+            id1: link[0],
+            id2: link[1],
+            t: link[2] + link[3],
+            type: 'link',
+            a2: true,
+            w: 1
+          };
+        });
+    };
+    
+
+
+    /************************************/
+    /* Parse response into Keylines JSON Format --- NODES */ 
+    /************************************/
+
+    function choose_id(node) {return (node[0]==null)? node[1]: node[0]};
+
+    function getColour(type) {
+      if (type[0] == null) { //This is a forum then
+        return 'blue'; //color of forum
+      }
+      return 'green'; //color of person
+    }
+
+    function makeNodes(nodes) {
+      return _.map(nodes, function (node) {
+        // console.log(node)
+        return {
+          type: 'node',
+          id: choose_id(node),
+          // x: 150,
+          // y: 150,
+          // d: {
+          //   type: node[0]
+          // },
+          t: "Hello World",
+          c: getColour(node)
+        };
+      });
+    }
+
+
+    </script>
+
+  </head>
+  
+  <body>
+
+    <!-- This is the HTML element that will be used to render the KeyLines component -->
+    <div id="kl" style="width: 818px; height: 586px;" ></div>
+
+  </body>
+
+</html>
