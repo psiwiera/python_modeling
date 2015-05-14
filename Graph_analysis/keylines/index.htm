@@ -51,7 +51,7 @@
         KeyLines.create('kl', function(err, chart) {
 
             /**First sample request**/
-          sendQuery('MATCH (n) RETURN n.pers_id, n.for_id;', function (json) {
+          sendQuery('MATCH (n) RETURN n.pers_id, n.for_id, n.prob_fraud;', function (json) {
             nodes = makeNodes(json.data);
             // console.log(nodes)
             chart.load({type: 'LinkChart', items: nodes}, chart.layout);
@@ -151,6 +151,7 @@
             t: link[2] + link[3],
             type: 'link',
             a2: true,
+            c: 'rgba(128,128,128, 0.2)',
             w: 1
           };
         });
@@ -165,9 +166,9 @@
 
     function getColour(type) {
       if (type[0] == null) { //This is a forum then
-        return 'blue'; //color of forum
+        return 'rgba(0,0,128,0.25)'; //color of forum
       }
-      return 'green'; //color of person
+      return 'rgba(255, 0, 0,' + type[2] + ')'; //color of person
     }
 
     function makeNodes(nodes) {
