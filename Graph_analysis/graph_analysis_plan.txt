@@ -6,11 +6,11 @@
 0. Install and familiarise with Neo4j
 
 #-----------------------------------Creation of dataset---------------------------------------------------------------------------
-# 1. Identify graph/ network data to use as a starting point
+# 1. Identify/ Create graph/ network data to use as a starting point
 #	Data Set Requirements
 		a. 150,000 individuals connected
 		b. 
-# 2. Need to create a key mapping this graph dataset to the Kaggle Credit Data Set
+# 2. Write function to load this dataset into a Neo4j database
 # 3. Need python code to write risk rating of dataset from Claire's model into the Neo4j dataset - essentially combining the classification model output to the graph dataset
 
 #-----------------------------------Look into linking to KeyLines?----------------------------------------------------------------
@@ -24,6 +24,6 @@
 
 #-----------------------------------ANALYSIS SHOWN--------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------------------
-1. Graph of how high fraud risk individuals are connected to each other (NB: use id column from trasactions to map)
+1. Graph of how high fraud risk individuals are connected to each other (NB: use id column from transactions to map) - IS THIS REALISTIC DATA OF INTEREST?
 2. Geographic data included?
 3. Transactional Data
