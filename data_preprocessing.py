@@ -143,7 +143,8 @@ def main(data, execute=False):
         x=(f.readlines())
         y=json.loads(x[0])
         f.close()
-        
+    
+    #Select only rows without null values (only null values in the kaggle data are in the following two columns)    
     data = data[pd.notnull(data['MonthlyIncome'])]      
     data = data[pd.notnull(data['NumberOfDependents'])]      
     #data.dropna(axis=0) # remove rows which have na values (axis = 1 will remove columns
@@ -183,13 +184,13 @@ def main(data, execute=False):
 
 
      #--------Scale variables-------------------------------------
-        logger.info('--------------------------------- Data PP - Scale variables 0-1 -----------------------------------')
+ #       logger.info('--------------------------------- Data PP - Scale variables 0-1 -----------------------------------')#
 
-        data -= data.min()
-        data /= data.max()
+ #       data -= data.min()
+ #       data /= data.max()
 
-        print("data scaled")
-        print(data.head())
+ #       print("data scaled")
+ #       print(data.head())
 
     #-----Convert to np array for use with Sklearn-----------------------------
     #print('Pandas dataframe size')

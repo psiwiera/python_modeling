@@ -212,11 +212,13 @@ def logRegGridSearch(param_grid, X_train,y_train,X_test,y_test, classifiers,labe
     gd_clf = GridSearchCV(modEstimator, param_grid, n_jobs=1, refit=True, verbose=10,scoring=score)
     
     # Print the results to the log file
-    logger.info('Optimum Random Forest Parameters: %s', pp.pformat(modelRanFor13.best_params_))
-    logger.info('Finished Random Forest Grid Search model build %s', datetime.datetime.now().time().isoformat())
+    # logger.info('Optimum Random Forest Parameters: %s', pp.pformat(modelRanFor13.best_params_))
+    # logger.info('Finished Random Forest Grid Search model build %s', datetime.datetime.now().time().isoformat())
     
     # get the metrics for the output
     classifiers = runGridSearchFit(gd_clf,X_train,y_train,X_test,y_test,label,classifiers,MODELS_OUTPUT_DIR,pickle)
+    
+    logger.info('Optimum Logistic Regression Parameters: %s', pp.pformat(gd_clf.best_estimator_))
     
     return classifiers
     
@@ -229,7 +231,7 @@ def decTreeGridSearch(param_grid, X_train,y_train,X_test,y_test, classifiers,lab
     
     # run the grid search
     # Note - setting n_jobs > 1 will cause a logging error.
-    gd_clf = GridSearchCV(modEstimator, param_grid, n_jobs=1, refit=True, verbose=0,scoring=score)
+    gd_clf = GridSearchCV(modEstimator, param_grid, n_jobs=1, refit=True, verbose=10,scoring=score)
     
     # Print the results to the log file
     # logger.info('Optimum Random Forest Parameters: %s', pp.pformat(modelRanFor13.best_params_))
@@ -237,6 +239,8 @@ def decTreeGridSearch(param_grid, X_train,y_train,X_test,y_test, classifiers,lab
     
     # get the metrics for the output
     classifiers = runGridSearchFit(gd_clf,X_train,y_train,X_test,y_test,label,classifiers,MODELS_OUTPUT_DIR,pickle)
+    
+    logger.info('Optimum Decision Tree Parameters: %s', pp.pformat(gd_clf.best_estimator_))
     
     return classifiers
     
@@ -256,8 +260,11 @@ def ranForestGridSearch(param_grid, X_train,y_train,X_test,y_test, classifiers,l
     # logger.info('Optimum Random Forest Parameters: %s', pp.pformat(modelRanFor13.best_params_))
     # logger.info('Finished Random Forest Grid Search model build %s', datetime.datetime.now().time().isoformat())
     
+    
     # get the metrics for the output
     classifiers = runGridSearchFit(gd_clf,X_train,y_train,X_test,y_test,label,classifiers,MODELS_OUTPUT_DIR,pickle)
+    
+    logger.info('Optimum Random Forest Parameters: %s', pp.pformat(gd_clf.best_params_))
     
     return classifiers
 

@@ -39,14 +39,14 @@ def modelsBuild(np_data, y, var_results, logger):
     classifiers = {} # This is an empty dictionary to store all the different classifiers
  
     # Decision Tree
-    # Dictionary of the sci-kit learn logistic regression parameters
+    # Dictionary of the sci-kit learn decision tree parameters
     sklearn_params={
-                    'criterion':'entropy'
+                    'criterion':'gini'
                     ,'splitter':'best'
-                    ,'max_depth':100
-                    ,'min_samples_split':100
-                    ,'min_samples_leaf':10
-                    ,'max_features':'sqrt'
+                    ,'max_depth':10
+                    ,'min_samples_split':50
+                    ,'min_samples_leaf':50
+                    ,'max_features':5
                     ,'compute_importances':None
                     ,'max_leaf_nodes':None
                     }
@@ -56,26 +56,26 @@ def modelsBuild(np_data, y, var_results, logger):
     # Logistic Regression
     # Dictionary of the sci-kit learn logistic regression parameters
     sklearn_params={
-                    'penalty':'l1'
+                    'penalty':'l2'
                     ,'dual':False
                     ,'tol':0.0001
-                    ,'C':0.10
-                    #,'fit_intercept':True
-                    #,'intercept_scaling':1
-                    #,'class_weight':'auto'
+                    ,'C':1.0
+                    ,'fit_intercept':True
+                    ,'intercept_scaling':1
+                    ,'class_weight':'auto'
                     #,'random_state':None
                     }
     if settings.models['Logistic Regression']==True:
         classfiers = modfuncs.logReg(X_train,y_train,X_test,y_test, classifiers,'Logistic Regression',settings.RESULTS_OUTPUT_DIR,settings.MODELS_OUTPUT_DIR,pickle=False, **sklearn_params)
     
     # Random Forest
-    # Dictionary of the sci-kit learn logistic regression parameters
+    # Dictionary of the sci-kit learn random forest parameters
     sklearn_params={
-                    'n_estimators':20
+                    'n_estimators':30
                     ,'criterion':'gini'
-                    ,'max_depth':100
-                    ,'min_samples_split':10
-                    ,'min_samples_leaf':10
+                    ,'max_depth':10
+                    ,'min_samples_split':50
+                    ,'min_samples_leaf':100
                     ,'max_features':None
                     }
     if settings.models['Random Forest']==True:
@@ -87,7 +87,7 @@ def modelsBuild(np_data, y, var_results, logger):
     # possible input values.
     param_grid = {
                     'penalty':('l1','l2')
-                    ,'C':[0.01]
+                    ,'C':[0.01, 0.1, 0.5, 1.0]
                     ,'fit_intercept':('True','False')
                  }
     if settings.models['Logistic Regression Grid Search']==True:
@@ -99,10 +99,10 @@ def modelsBuild(np_data, y, var_results, logger):
     param_grid = [{
                     'criterion':['entropy','gini']
                     ,'splitter':['best']
-                    ,'max_features':[5,10,15] 
-                    ,'min_samples_leaf':[5,None]
-                    ,'min_samples_split':[5]
-                    ,'max_depth':[10]
+                    ,'max_features':[5] 
+                    ,'min_samples_leaf':[5,50]
+                    ,'min_samples_split':[5,50]
+                    ,'max_depth':[10,20]
                     ,'max_leaf_nodes':[None]
                   }]
     if settings.models['Decision Tree Grid Search']==True:
@@ -112,12 +112,12 @@ def modelsBuild(np_data, y, var_results, logger):
     # In each case the square brackets can take a comma separated list of the 
     # possible input values.
     param_grid = [{
-                    'criterion':['entropy']
+                    'criterion':['gini']
                     ,'max_features':[5]
-                    ,'n_estimators':[5]
-                    ,'max_depth':[50]
-                    ,'min_samples_leaf':[1]
-                    ,'min_samples_split':[5]
+                    ,'n_estimators':[30,50]
+                    ,'max_depth':[5,10,20]
+                    ,'min_samples_leaf':[100,150]
+                    ,'min_samples_split':[50,75]
                 }]
     if settings.models['Random Forest Grid Search']==True:
         classifiers = modfuncs.ranForestGridSearch(param_grid, X_train,y_train,X_test,y_test, classifiers,'Random Forest Grid Search',settings.RESULTS_OUTPUT_DIR,settings.MODELS_OUTPUT_DIR) 

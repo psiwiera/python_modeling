@@ -1,0 +1,12 @@
+<<<<<<< HEAD
+Exec.model_execution - Started 14:47:33.366287
+Exec.model_execution - --------------------------------- Data Load -----------------------------------
+Exec.model_execution - --------------------------------- Apply Pre-Processing Steps-----------------------------------
+Exec.Data_Preprocessing.main - --------------------------------- Data PP - Modifying Variables -----------------------------------
+Exec.Data_Preprocessing.main - --------------------------------- Data PP - Address Missing Variables -----------------------------------
+=======
+Exec.model_execution - Started 14:44:32.336609
+Exec.model_execution - --------------------------------- Data Load -----------------------------------
+Exec.model_execution - --------------------------------- Apply Pre-Processing Steps-----------------------------------
+Exec.Data_Preprocessing.main - --------------------------------- Data PP - Modifying Variables -----------------------------------
+>>>>>>> origin/risk_pivotal

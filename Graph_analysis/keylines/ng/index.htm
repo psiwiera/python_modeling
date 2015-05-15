@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <link rel="stylesheet" href="bootstrap.css"/>
+    <link rel="stylesheet" href="../css/keylines.css"/>
+    <style type='text/css'>
+      ul.selected-items {
+        padding: 0;
+        margin: 0;
+      }
+      .selected-items li {
+        list-style-type: none;
+      }
+      .rhs-panel {
+        max-height: 650px;
+        overflow-y: auto;
+      }
+      .panel {
+        padding: 5px;
+        margin-bottom: 10px;
+        border: 1px solid #E0E0E0;
+        border-radius: 3px;
+      }
+      #chartId {
+        border: 1px solid #E0E0E0;
+      }
+    </style>
+    <title>KeyLines AngularJS Demo (Beta)</title>
+  </head>
+  <body>
+
+    <div class="container" ng-app='myApp' ng-controller='MyController'>
+
+      <h1>KeyLines AngularJS Demo (Beta)</h1>
+      <p> Click an icon to see its properties </p>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="components-container">
+
+              <div
+                id='chartId'
+                style='width:744px; height:430px;'
+                kl-base-path='../'
+                kl-selected='selected'
+                kl-chart='chart'
+                kl-options='options'>
+              </div>
+
+          </div>
+        </div>
+        <div class="col-md-4 rhs-panel">
+          <div class="row" ng-show='selected'>
+            <div class="col-md-12">
+              <div class='panel'>
+                <legend>Chart controls</legend>
+                <button class='btn btn-large btn-block' ng-click='clearSelection()'> Clear Selection </button>
+              </div>
+            </div>
+          </div>
+          <div class="row" ng-hide='selected'>
+            <div class="col-md-12">
+              <div class='panel'>
+                <legend>Chart controls</legend>
+                <div class='checkbox'>
+                  <label>
+                    <input type='checkbox' ng-model='options.handMode'>
+                    Hand mode
+                  </label>
+                </div>
+                <label>Set Background Colour</label>
+                <div class='radio'>
+                  <label>
+                    <input type='radio' ng-model='options.backColour' value='white'>
+                    White
+                  </label>
+                </div>
+                <div class='radio'>
+                  <label>
+                    <input type='radio' ng-model='options.backColour' value='grey'>
+                    Grey
+                  </label>
+                </div>
+                <div class='radio'>
+                  <label>
+                    <input type='radio' ng-model='options.backColour' value='black'>
+                    Black
+                  </label>
+                </div>
+                <button class='btn btn-large' ng-click='zoom("in")'> Zoom in </button>
+                <button class='btn btn-large' ng-click='zoom("out")'> Zoom out </button>
+              </div>
+            </div>
+          </div>
+          <div class="row" ng-show="selected">
+            <div class="col-md-12">
+              <div class="panel" ng-model='selected[0]'>
+                <p> Edit the label and see it change in the chart </p>
+                <form class="form-horizontal" role="form">
+                  <div class="form-group">
+                    <label class="col-md-2 control-label">Label</label>
+                    <div class="col-md-10">
+                      <input class="form-control" ng-model="selected[0].t">
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-8">
+          <h4> Notes </h4>
+          <p> View page source for implementation details </p>
+          <p>
+            <ul>
+              <li> Both width and height must be specified on the div </li>
+              <li> kl-base-path must used so KeyLines knows which URL to load its assets & dependencies from</li>
+              <li> kl-chart='myChartName' gives access to the stanard KeyLines chart API through $scope.myChartName
+              </li>
+              <li> All KeyLines events are $broadcast through Angular (see services within ng-keylines.js) </li>
+              <li> kl-options='myOptions' maps onto the standard chart options object </li>
+              <li> Using kl-selected='mySelected' allows binding to the chart selection:
+                <ul>
+                  <li>This is the item itself, not an id </li>
+                  <li>In multiple selection it will be the first item selected </li>
+                </ul>
+              </li>
+              <li> Both kl-selected and kl-options are optional, and can be two-way bound in the usual Angular way</li>
+            </ul>
+
+          </p>
+          <p>
+            Please feedback any questions, issues or suggestions to
+            <a href='mailto:support@keylines.com'> support@keylines.com</a>
+          </p>
+
+        </div>
+      </div>
+
+      <script src="angular.js"></script>
+      <script src="../js/keylines.js"></script>
+      <script src="ng-keylines.js"></script>
+
+      <script>
+        function randomChart() {
+          function randInt(begin, end) {
+            return Math.floor(Math.random() * (end - begin)) + begin;
+          }
+          var items = [];
+          for (var i = 0; i < 20; i++) {
+            items.push({
+              id: 'item' + i,
+              type: 'node',
+              c: 'rgb(20, 100, 200)',
+              t: 'item' + i
+            });
+            items.push({
+              id: 'link' + i,
+              type: 'link',
+              id1: 'item' + i,
+              id2: 'item' + ((i > 10) ? randInt(0, 11) : randInt(11, 20))
+            });
+          }
+          return {type: 'LinkChart', items: items};
+        }
+
+        angular.module('myApp', ['myApp.controllers', 'keylines']);
+        
+        angular.module('myApp.controllers', []).
+          controller('MyController', function($scope) {
+
+            // all keylines events are prefixed with kl and be captured like so:
+            $scope.$on('kl', function (event, eventName, componentId, componentType) {
+              
+            });
+
+            // example event to listen for
+            $scope.$on('kl:click', function (event, componentId, type, id, x, y, button, sub) {
+              
+            });
+
+            // event on specific component (specified by id after last colon)
+            $scope.$on('kl:ready:chartId', function () {
+              $scope.chart.load(randomChart(), function () {
+                $scope.chart.layout('standard');
+              });
+            });
+
+            $scope.selected = [];
+
+            //changing options on the scope will set them on the KeyLines chart itself
+            $scope.options = {
+              backColour: 'white', 
+              overview: false, 
+              controlColour: 'grey', 
+              selectionColour: '#44D'
+            };
+
+            $scope.zoom = function (type) {
+              $scope.chart.zoom(type, {animate: true, time: 400});
+            };
+
+            $scope.clearSelection = function() {
+              $scope.chart.selection([]);
+            };
+
+          });
+
+      </script>
+
+  </body>
+</html>

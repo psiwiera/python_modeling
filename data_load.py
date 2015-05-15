@@ -51,6 +51,7 @@ def csvfile(INPUT_DIR, file_name, RESULTS_OUTPUT_DIR):
         #plt.savefig(RESULTS_OUTPUT_DIR + 'test2.png')
         logger.info ('Data Load Completed Successfully')
         print('Data Load Completed Successfully')
+        
         return data
         
         
@@ -255,6 +256,10 @@ def run_sql_string(sqlString,logtype='Master'):
 	conn.close()
 	
 	return ('Completed')
+
+#Function to read data from pivotal HD node - what format will this be?? SQL?
+def read_from_pivotal():
+	pass
 
 if __name__ == "__main__":
 	print ('Please run this script from the machine_learning_master script')

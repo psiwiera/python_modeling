@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <!-- BOOTSTRAP -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"> -->
+
+    <link rel='stylesheet' type='text/css' href='css/keylines.css'/>
+    <!-- <link rel="stylesheet" type="text/css" href="css/prettify.css"> -->
+    <script type="text/javascript" src="js/keylines.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+
+    <!-- BOOTSTRAP -->
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+
+    /************************************/
+    /* GLOBAL VARIABLES */ 
+    /************************************/
+    var nodes;
+    var links;
+    console.log(new Date(2014, 0, 1).getTime())
+    /************************************/
+    /* Load KeyLines and general setup  */ 
+    /************************************/
+      window.onload = function () {
+
+        KeyLines.paths({ 
+          assets: 'assets/',
+          flash: { 
+            swf: 'swf/keylines.swf', 
+            swfObject: 'js/swfobject.js', 
+            expressInstall: 'swf/expressInstall.swf' 
+          }
+        });
+
+        // KeyLines.create('kl', function(err, chart) {
+        //   chart.load({
+        //     type: 'LinkChart',
+        //     items: [{id:'id1', type: 'node', x:150, y: 150, t:'Hello World!'}]
+        //   });
+        // });
+
+        KeyLines.create('kl', function(err, chart) {
+
+            /**First sample request**/
+          sendQuery('MATCH (n) RETURN n.pers_id, n.for_id, n.prob_fraud;', function (json) {
+            nodes = makeNodes(json.data);
+            // console.log(nodes)
+            chart.load({type: 'LinkChart', items: nodes}, chart.layout);
+          });
+
+          sendQuery('MATCH (a)-[r]->(b) RETURN a.pers_id, b.for_id, r.date, r.time;', function(json) {
+            links = loadlinks(json.data);
+            // console.log(links)
+            chart.merge(links)
+          });
+
+          /************************************/
+          /* Functions to change the layout*/ 
+          /************************************/
+          //Attach a click event to the layout id
+          // $(document).ready(function(){
+          //   $('#layout').click(function (evt) {
+          //     console.log("got to here")
+          //     layout(true);
+          //   });
+          // });
+
+          $('input:radio[name="layoutType"]').change(function(){
+            var layout_to_use = this.value
+            layout(layout_to_use);
+          });
+
+
+          function layout(layout_to_use) {
+         
+            // look at the layout selected and perform it!
+            $('#layout').click(function(){
+              if (layout_to_use === 'standard') {
+                console.log('standard')
+                chart.layout('standard', {animate: true, fixed: chart.selection(), fit: true, tidy: true});
+              }
+              if (layout_to_use === 'hierarchy') {
+                console.log('hierarchy')
+                chart.layout('hierarchy', {top: chart.selection(), animate: true, tidy: true, fit: true, orientation: getOrientation()});
+              }
+              if (layout_to_use === 'radial') {
+                console.log('radial')
+                chart.layout('radial', {top: chart.selection(), animate: true, tidy: true, fit: true});
+              }
+              if (layout_to_use === 'structural') {
+                console.log('structural')
+                chart.layout('structural', {animate: true, tidy: true, fit: true});
+              }
+              if (layout_to_use === 'tweak') {
+                console.log('tweak')
+                chart.layout('tweak', {animate: true, fit: true});
+              }
+            });
+          }
+
+          function getOrientation(){
+            return $('#orient').val();
+          }
+          /************************************/
+          /************************************/
+        
+        });
+
+      };
+
+    /************************************/
+    /* Function to send a query to a Neo4j database  */ 
+    /************************************/
+    function sendQuery (query, callback) {
+      $.ajax({
+        type: 'POST',
+        // This is the url of the cypher end point.
+        url:'http://localhost:7474/db/data/cypher',
+        // send the data with the params approach to avoid Cypher injections  
+        data: JSON.stringify({query: query}),
+        dataType: 'json',
+        contentType: 'application/json',
+        // map to our callback method, first parameter will be json result from neo4j                                                                                                                                                                                           
+        success: callback,
+        error: function (xhr) {
+          console.log(xhr);
+        }
+      });
+    }
+
+    /************************************/
+    /* Parse response into Keylines JSON Format --- LINKS */ 
+    /************************************/
+
+    function loadlinks(links){
+      var linkId = 0;
+        return _.map(links, function(link){
+          return {
+            id: 'link' + linkId++,
+            id1: link[0],
+            id2: link[1],
+            t: link[2] + link[3],
+            type: 'link',
+            a2: true,
+            c: 'rgba(128,128,128, 0.2)',
+            w: 1
+          };
+        });
+    };
+    
+
+    /************************************/
+    /* Parse response into Keylines JSON Format --- NODES */ 
+    /************************************/
+
+    function choose_id(node) {return (node[0]==null)? node[1]: node[0]};
+
+    function getColour(type) {
+      if (type[0] == null) { //This is a forum then
+        return 'rgba(0,0,128,0.25)'; //color of forum
+      }
+      return 'rgba(255, 0, 0,' + type[2] + ')'; //color of person
+    }
+
+    function makeNodes(nodes) {
+      return _.map(nodes, function (node) {
+        // console.log(node)
+        return {
+          type: 'node',
+          id: choose_id(node),
+          // x: 150,
+          // y: 150,
+          // d: {
+          //   type: node[0]
+          // },
+          // t: "Hello World",
+          c: getColour(node)
+        };
+      });
+    }
+
+    </script>
+
+  </head>
+  
+  <body>
+
+    <div id="main">
+      <div id="container" style="margin-top:-52px;" class="container">
+        <h2>Risk Framework <small><a href="source-layouts.js.htm"> Source Code</a></small></h2>
+        
+        <!-- KEYLINES CHART CANVAS -->
+        <div id="row" class="row">
+          <!-- KEYLINES CANVAS AREA -->
+          <div id="lhs" class="col-sm-8">
+            <div id="fullscreen">
+              <div id="keyline" class="cicontainer">
+                <div class="cichart">
+                  <!-- This is the HTML element that will be used to render the KeyLines component -->
+                  <canvas height="1130" width="948" id="kl" style="width: 700px; height: 565px; touch-action: none; outline: none; cursor: auto;" tabindex="8888"></canvas>
+                  <!-- <canvas height="700" width="700" id="kl" style="cursor: auto;" tabindex="8888"></canvas> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ----------------------- -->
+
+
+          <!-- KEYLINES LAYOUT CONTROLS -->
+          <div id="rhs" class="col-sm-4">
+            <div id="rhscontent" class="citext">
+              <ul id="toggleTab" class="nav nav-tabs vertical-tabs fshide">
+                <li class="active"><a id="toggleRight"><i id="toggleIcon" class="icon-chevron-down"></i> </a></li>
+              </ul>
+              <div class="tab-content">
+                <div style="min-height:565px; *height: 565px;" class="cicontent cipad">
+                  <form>
+                    <fieldset>
+                      <legend>Choose Layout Type:</legend>
+                      <label class="radio">
+                        <input type="radio" name="layoutType" value="standard" checked="checked"> Standard
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="layoutType" value="hierarchy"> Hierarchy
+                      </label>
+                      <div style="margin: 5px 20px 0;">
+                        <label><strong>Orientation:</strong>
+                          <select id="orient" class="input-block-level">
+                            <option value="down">Down</option>
+                            <option value="right">Right</option>
+                            <option value="up">Up</option>
+                            <option value="left">Left</option>
+                          </select>
+                        </label>
+                      </div>
+                      <label class="radio">
+                        <input type="radio" name="layoutType" value="radial"> Radial
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="layoutType" value="structural"> Structural
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="layoutType" value="tweak"> Tweak
+                      </label>
+                    </fieldset>
+                  </form>
+                  <div style="margin-top:10px">
+                    <input type="button" value="Run layout" id="layout" class="btn">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ----------------------- -->
+
+      </div>
+    </div>
+
+  </body>
+
+</html>
